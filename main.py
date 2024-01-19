@@ -11,7 +11,7 @@ class Vehicle:
     color = ""
     value = 100.00
     def description(self):
-        desc_str = "%s %s that is named %s and has a value of %f" % (self.color, self.kind, self.name, self.value)
+        desc_str = "%s %s that is named %s and has a value of %.2f" % (self.color, self.kind, self.name, self.value)
         return desc_str
     def info(self):
         return self.name, self.kind, self.color, self.value
