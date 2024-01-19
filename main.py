@@ -3,7 +3,7 @@ import pickle
 #module used across the code for dramatic effect
 import time
 i = 0
-yeslist = ["yes","y","of course"]
+yeslist = ["yes","y","of course","yea"]
 #code from https://www.learnpython.org/en/Classes_and_Objects
 class Vehicle:
     name = ""
@@ -68,7 +68,7 @@ elif des == 0:
     print("Better luck next time!")
     sys.exit()
 print(f"Your car will have to drive {des} blocks to reach your destination!")
-#car time calc
+#car time calc(based on value)
 if car.value >= 100000:
     ime = 0.1 * des
 elif car.value >= 50000 :
