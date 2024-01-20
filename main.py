@@ -3,8 +3,15 @@ import pickle
 #module used across the code for dramatic effect
 import time
 i = 0
-yeslist = ["yes","y","of course","yea"]
+yeslist = ("yes","y","of course","yea")
 #code from https://www.learnpython.org/en/Classes_and_Objects
+def get_numeric_input(prompt):
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Please enter a valid numerical value. (Try removing any special characters)")
+            
 class Vehicle:
     name = ""
     kind = "car"
@@ -16,7 +23,7 @@ class Vehicle:
     def info(self):
         return self.name, self.kind, self.color, self.value
 carinfo = []
-while i == 0:
+while True:
     if carinfo != "":
         print("There is no saved data for this program")
         time.sleep(2)
@@ -26,17 +33,15 @@ while i == 0:
         car1.name = input("What is the name of your car?")
         car1.kind = input("What kind of car do you have?")
         car1.color = input("What is the color of your car?")
-        car1.value = input("What is the value of the car?")
-        car1.value = int(car1.value)
+        car1.value = get_numeric_input("What is the value of the car?")
         print("Is your car a " + car1.description())
-        for i in yeslist:
-            iinp = input()
-            if iinp in yeslist:
-                carinfo.append(car1.info)
-                car = car1
-                break
-            else:
-                break
+        iinp = input()
+        if iinp in yeslist:
+            carinfo.append(car1.info)
+            car = car1
+            break
+        else:
+            continue
     else:
         print(carinfo)
         break
@@ -68,19 +73,23 @@ elif des == 0:
     print("Better luck next time!")
     sys.exit()
 print(f"Your car will have to drive {des} blocks to reach your destination!")
-#car time calc(based on value)
-if car.value >= 100000:
-    ime = 0.1 * des
-elif car.value >= 50000 :
-    ime = 0.75 * des
-elif car.value >= 25000:
-    ime = 1 * des
-elif car.value >= 10000:
-    ime = 1.25 * des
-elif car.value >= 5000:
-    ime = 1.6 * des
-elif car.value >= 1000:
-    ime = 2 * des
+# car time calc(based on value)
+# Dictionary to store value thresholds and corresponding coefficients
+value_coefficients = {
+    100000: 0.1,
+    50000: 0.75,
+    25000: 1,
+    10000: 1.25,
+    5000: 1.6,
+    1000: 2,
+}
+
+# Find the appropriate coefficient based on car.value
+for threshold, coefficient in sorted(value_coefficients.items(), reverse=True):
+    if car.value >= threshold:
+        ime = coefficient * des
+        break
 else:
     ime = 5 * des
+
 print(f"It wil take {ime} minutes to arrive at your destination")
