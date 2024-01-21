@@ -57,12 +57,12 @@ time.sleep(2)
 #distance calc
 #pos inputs
 carpos = []
-carx = input("What is your car's starting X position?")
+carx = get_numeric_input("What is your car's starting X position?")
 carpos.append(carx)
-cary = input("What is your car's starting Y position?")
+cary = get_numeric_input("What is your car's starting Y position?")
 carpos.append(cary)
-des = input("Input your destination's X position")
-des1 = input("Input your destination's Y position")
+des = get_numeric_input("Input your destination's X position")
+des1 = get_numeric_input("Input your destination's Y position")
 #calc
 des = int(des) - int(carpos[0])
 des1 = int(des1) - int(carpos[1])
