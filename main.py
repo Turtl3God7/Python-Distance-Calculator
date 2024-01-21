@@ -2,16 +2,21 @@
 import pickle
 #module used across the code for dramatic effect
 import time
-i = 0
+
 yeslist = ("yes","y","of course","yea")
-#code from https://www.learnpython.org/en/Classes_and_Objects
+
 def get_numeric_input(prompt):
+    attempts= 0
     while True:
         try:
             return float(input(prompt))
         except ValueError:
-            print("Please enter a valid numerical value. (Try removing any special characters)")
+            print("Please enter a valid numerical value.")
+            attempts += 1
+            if attempts >= 1:
+                print("Try removing any special characters like commas")
             
+# Code from https://www.learnpython.org/en/Classes_and_Objects
 class Vehicle:
     name = ""
     kind = "car"
