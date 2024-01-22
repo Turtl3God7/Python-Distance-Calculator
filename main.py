@@ -12,7 +12,7 @@ def get_numeric_input(prompt):
         except ValueError:
             print("Please enter a valid numerical value.")
             attempts += 1
-            if attempts >= 1:
+            if attempts >= 2:
                 print("Try removing any special characters like commas")
 def caps(prompt):
     prompt = input(prompt)
