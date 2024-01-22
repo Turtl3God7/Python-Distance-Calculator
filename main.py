@@ -2,6 +2,7 @@ s#UNUSED MODULE
 import pickle
 #module used across the code for dramatic effect
 import time
+from car import *
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
