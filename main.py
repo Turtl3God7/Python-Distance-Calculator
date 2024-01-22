@@ -5,7 +5,7 @@ import time
 yeslist = ("yes","y","of course","yea")
 
 def get_numeric_input(prompt):
-    attempts= 0
+    attempts = 0
     while True:
         try:
             return float(input(prompt))
@@ -14,7 +14,10 @@ def get_numeric_input(prompt):
             attempts += 1
             if attempts >= 1:
                 print("Try removing any special characters like commas")
-            
+def caps(prompt):
+    prompt = input(prompt)
+    prompt.capitalize = prompt
+    return prompt
 # Code from https://www.learnpython.org/en/Classes_and_Objects
 class Vehicle:
     name = ""
@@ -36,7 +39,7 @@ while True:
         print("Please add your car")
         time.sleep(2)
         car1 = Vehicle()
-        car1.name = input("What is the name of your car?")
+        car1.name = caps("What is the name of your car?")
         car1.kind = input("What kind of car do you have?")
         car1.color = input("What is the color of your car?")
         car1.value = get_numeric_input("What is the value of the car?")
