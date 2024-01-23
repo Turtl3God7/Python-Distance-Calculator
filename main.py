@@ -1,7 +1,8 @@
-s#UNUSED MODULE
+#UNUSED MODULE
 import pickle
 #module used across the code for dramatic effect
 import time
+
 yeslist = ("yes","y","of course","yea")
 
 def get_numeric_input(prompt):
@@ -83,6 +84,12 @@ elif des == 0:
     print("Better luck next time!")
     sys.exit()
 print(f"Your car will have to drive {des} blocks to reach your destination!")
+
+#block to mile
+miles = des // 20
+
+print(f"Your car will have to drive {miles} miles to reach your destination!")
+
 # car time calc(based on value)
 # Dictionary to store value thresholds and corresponding coefficients
 value_coefficients = {
@@ -103,3 +110,22 @@ else:
     ime = 5 * des
 
 print(f"It wil take {ime} minutes to arrive at your destination")
+
+#gas calc
+speedword = []
+while True:
+    sped = input("How fast do you want to go?/nFast?/nMedium?/nSlow?")
+    spedwords = {
+        fast: 10
+        medium: 35
+        slow: 65
+    }
+    for speed, co in spedwords:
+        try speed in sped:
+            gas = miles//co
+            speedword.append(co)
+            break
+        else ValueError:
+            continue
+print(f"You will use {gas} gallons")
+print(f"In other words, you will use {speedword} miles per gallon")
