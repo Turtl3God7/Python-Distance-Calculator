@@ -72,13 +72,19 @@ des1 = get_numeric_input("Input your destination's Y position")
 #calc
 des = int(des) - int(carpos[0])
 des1 = int(des1) - int(carpos[1])
+
+# Integer Fix
+des = abs(des1)
+des1 = abs(des1)
 des = des + des1
+
 #module import for this part of code
+
 import sys
-#Integer fix
-if des < 0:
-    des = des * -1
-elif des == 0:
+
+#0 problem
+
+if des == 0:
     print("Why did you input the same coordinates twice?")
     print("Well as a punishment you ain't gonna be using this program")
     print("Better luck next time!")
@@ -114,18 +120,16 @@ print(f"It wil take {ime} minutes to arrive at your destination")
 #gas calc
 speedword = []
 while True:
-    sped = input("How fast do you want to go?/nFast?/nMedium?/nSlow?")
+    sped = input("How fast do you want to go?\nFast?\nMedium?\nSlow?")
     spedwords = {
-        fast: 10
-        medium: 35
-        slow: 65
+        "fast": 10,
+        "medium": 35,
+        "slow": 65,
     }
     for speed, co in spedwords:
-        try speed in sped:
+        if speed in sped:
             gas = miles//co
             speedword.append(co)
             break
-        else ValueError:
-            continue
 print(f"You will use {gas} gallons")
 print(f"In other words, you will use {speedword} miles per gallon")
