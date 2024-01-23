@@ -92,7 +92,7 @@ if des == 0:
 print(f"Your car will have to drive {des} blocks to reach your destination!")
 
 #block to mile
-miles = des // 20
+miles = des / 20
 
 print(f"Your car will have to drive {miles} miles to reach your destination!")
 
@@ -122,12 +122,12 @@ speedword = []
 while True:
     sped = input("How fast do you want to go?\nFast?\nMedium?\nSlow?")
     spedwords = {
-        "fast": 10,
-        "medium": 35,
-        "slow": 65,
+        'fast': 10,
+        'medium': 35,
+        'slow': 65,
     }
-    for speed, co in spedwords:
-        if speed in sped:
+    for spedwords in range(3):
+        if spedwords.keys() in sped:
             gas = miles//co
             speedword.append(co)
             break
