@@ -17,7 +17,7 @@ def get_numeric_input(prompt):
                 print("Try removing any special characters like commas")
 def caps(prompt):
     prompt = input(prompt)
-    prompt = prompt.title
+    prompt = prompt.title()
     return prompt
 # Code from https://www.learnpython.org/en/Classes_and_Objects
 class Vehicle:
