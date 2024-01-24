@@ -117,7 +117,7 @@ else:
 
 print(f"It wil take {ime} minutes to arrive at your destination")
 
-#gas calc
+# gas calc
 speedword = []
 while True:
     sped = input("How fast do you want to go?\nFast?\nMedium?\nSlow?")
@@ -126,10 +126,15 @@ while True:
         'medium': 35,
         'slow': 65,
     }
-    for spedwords in range(3):
-        if spedwords.keys() in sped:
-            gas = miles//co
+    for word, co in spedwords.items():
+        if word in sped.lower():
+            gas = miles / co
             speedword.append(co)
             break
-print(f"You will use {gas} gallons")
-print(f"In other words, you will use {speedword} miles per gallon")
+    else:
+        print("Invalid speed input. Please choose from 'Fast', 'Medium', or 'Slow'.")
+        continue
+
+    print(f"You will use {gas} gallons")
+    print(f"In other words, you will use {speedword} miles per gallon")
+    break
