@@ -1,5 +1,7 @@
-#UNUSED MODULE
+# Module for data serialization of a list
 import pickle
+# Module used for forcefully ending the program
+import sys
 #module used across the code for dramatic effect
 import time
 
@@ -32,7 +34,11 @@ class Vehicle:
         return self.name, self.kind, self.color, self.value
 carinfo = [] 
 
-print("There is no saved data for this program")
+try:
+    with open('carinfo.pkl', 'rb') as f:
+        carinfo = pickle.load(f)
+except FileNotFoundError:
+    print("There is no saved data for this program")
 
 while True:
     if carinfo != "":
@@ -56,6 +62,19 @@ while True:
         print(carinfo)
         break
 
+while True:
+    print("Saving Data")
+    try:
+        with open('carinfo.pkl', 'wb') as f:
+            pickle.dump(carinfo, f)
+            f.close
+    except:
+        print("An error occurred")
+        sys.exit()
+    else:
+        print("File Save Successful!")
+        break
+    
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
@@ -77,10 +96,6 @@ des1 = int(des1) - int(carpos[1])
 des = abs(des1)
 des1 = abs(des1)
 des = des + des1
-
-#module import for this part of code
-
-import sys
 
 #0 problem
 
@@ -130,6 +145,7 @@ while True:
         if word in sped.lower():
             gas = miles / co
             speedword.append(co)
+            str(speedword)
             break
     else:
         print("Invalid speed input. Please choose from 'Fast', 'Medium', or 'Slow'.")
