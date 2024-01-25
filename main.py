@@ -67,9 +67,9 @@ while True:
     try:
         with open('carinfo.pkl', 'wb') as f:
             pickle.dump(carinfo, f)
-            f.close
-    except:
-        print("An error occurred")
+            f.close()
+    except Exception as e:
+        print(f"An error occurred: {e}")
         sys.exit()
     else:
         print("File Save Successful!")
