@@ -145,7 +145,7 @@ while True:
         if word in sped.lower():
             gas = miles / co
             speedword.append(co)
-            str(speedword)
+            speedword_str = str(speedword)
             break
     else:
         print("Invalid speed input. Please choose from 'Fast', 'Medium', or 'Slow'.")
