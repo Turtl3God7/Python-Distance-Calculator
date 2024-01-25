@@ -59,9 +59,40 @@ while True:
         else:
             continue
     else:
-        print(carinfo)
-        break
-
+        newcar = input("Do you want to create a new car?")
+        if newcar in yeslist:
+            while True:
+                previouscar = carinfo[::-4]
+                previouscar = len(previouscar)
+                previouscar+=1
+                previouscar = str(previouscar)
+                newcar = car + previouscar
+                print("Please add your car")
+                time.sleep(2)
+                newcar = Vehicle()
+                newcar.name = caps("What is the name of your car?")
+                newcar.kind = input("What kind of car do you have?")
+                newcar.color = input("What is the color of your car?")
+                newcar.value = get_numeric_input("What is the value of the car?")
+                print("Is your car a " + newcar.description())
+                iinp = input()
+                if iinp in yeslist:
+                    carinfo.append(newcar)
+                    car = newcar
+                    break
+                else:
+                    continue
+        else:
+            carlen = len(carinfo) // 4
+            carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
+            for carinfo in carlen:
+                i = 0
+                print(carinfo[i])
+                i += 4
+            carinput = (carinput-1)*4
+            car = carinfo[carinput]
+            print(f"Your current car is {car}")
+            break
 while True:
     print("Saving Data")
     try:
