@@ -1,5 +1,7 @@
-#UNUSED MODULE
+# Module for data serialization of a list
 import pickle
+# Module used for forcefully ending the program
+import sys
 #module used across the code for dramatic effect
 import time
 
@@ -32,7 +34,11 @@ class Vehicle:
         return self.name, self.kind, self.color, self.value
 carinfo = [] 
 
-print("There is no saved data for this program")
+try:
+    with open('carinfo.pkl', 'rb') as f:
+        carinfo = pickle.load(f)
+except FileNotFoundError:
+    print("There is no saved data for this program")
 
 while True:
     if carinfo != "":
@@ -53,9 +59,52 @@ while True:
         else:
             continue
     else:
-        print(carinfo)
+        newcar = input("Do you want to create a new car?")
+        if newcar in yeslist:
+            while True:
+                previouscar = carinfo[::-4]
+                previouscar = len(previouscar)
+                previouscar+=1
+                previouscar = str(previouscar)
+                newcar = car + previouscar
+                print("Please add your car")
+                time.sleep(2)
+                newcar = Vehicle()
+                newcar.name = caps("What is the name of your car?")
+                newcar.kind = input("What kind of car do you have?")
+                newcar.color = input("What is the color of your car?")
+                newcar.value = get_numeric_input("What is the value of the car?")
+                print("Is your car a " + newcar.description())
+                iinp = input()
+                if iinp in yeslist:
+                    carinfo.append(newcar)
+                    car = newcar
+                    break
+                else:
+                    continue
+        else:
+            carlen = len(carinfo) // 4
+            carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
+            for carinfo in carlen:
+                i = 0
+                print(carinfo[i])
+                i += 4
+            carinput = (carinput-1)*4
+            car = carinfo[carinput]
+            print(f"Your current car is {car}")
+            break
+while True:
+    print("Saving Data")
+    try:
+        with open('carinfo.pkl', 'wb') as f:
+            pickle.dump(carinfo, f)
+            f.close()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    else:
+        print("File Save Successful!")
         break
-
+    
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
@@ -77,10 +126,6 @@ des1 = int(des1) - int(carpos[1])
 des = abs(des1)
 des1 = abs(des1)
 des = des + des1
-
-#module import for this part of code
-
-import sys
 
 #0 problem
 
@@ -130,6 +175,7 @@ while True:
         if word in sped.lower():
             gas = miles / co
             speedword.append(co)
+            speedword_str = str(speedword)
             break
     else:
         print("Invalid speed input. Please choose from 'Fast', 'Medium', or 'Slow'.")
