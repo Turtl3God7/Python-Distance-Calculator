@@ -94,6 +94,7 @@ while True:
             car = carinfo[carinput]
             print(f"Your current car is {car}")
             break
+ecount = 0
 while True:
     print("Saving Data")
     try:
@@ -109,8 +110,8 @@ while True:
     finally:
         if ecount >= 60:
             quitput = input("Do you want to quit trying to save?\nThis will mean that any new data will be lost.")
-        if quitput in yeslist:
-            print("")
+            if quitput in yeslist:
+                print("")
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
