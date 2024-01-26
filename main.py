@@ -111,7 +111,7 @@ while True:
         if ecount >= 60:
             quitput = input("Do you want to quit trying to save?\nThis will mean that any new data will be lost.")
             if quitput in yeslist:
-                print("")
+                break
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
