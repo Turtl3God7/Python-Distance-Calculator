@@ -85,8 +85,9 @@ while True:
         else:
             carlen = len(carinfo) // 4
             carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
+            
+            i = 0
             for carinfo in carlen:
-                i = 0
                 print(carinfo[i])
                 i += 4
             carinput = (carinput-1)*4
@@ -101,10 +102,15 @@ while True:
             f.close()
     except Exception as e:
         print(f"An error occurred: {e}")
+        ecount += 1
     else:
         print("File Save Successful!")
         break
-    
+    finally:
+        if ecount >= 60:
+            quitput = input("Do you want to quit trying to save?\nThis will mean that any new data will be lost.")
+        if quitput in yeslist:
+            print("")
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
