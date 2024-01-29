@@ -52,7 +52,7 @@ while True:
         car1.value = get_numeric_input("What is the value of the car?")
         print("Is your car a " + car1.description())
         iinp = input()
-        if iinp in yeslist:
+        if iinp.lower() in yeslist:
             carinfo.append(car1.info)
             car = car1
             break
@@ -60,7 +60,7 @@ while True:
             continue
     else:
         newcar = input("Do you want to create a new car?")
-        if newcar in yeslist:
+        if newcar.lower() in yeslist:
             while True:
                 previouscar = carinfo[::-4]
                 previouscar = len(previouscar)
@@ -129,9 +129,16 @@ des1 = get_numeric_input("Input your destination's Y position")
 des = int(des) - int(carpos[0])
 des1 = int(des1) - int(carpos[1])
 
+# Redundant version
+if des < 0:
+    des * -1
+if des1 < 0:
+    des1 * -1
+
 # Integer Fix
 des = abs(des1)
 des1 = abs(des1)
+    
 des = des + des1
 
 #0 problem
