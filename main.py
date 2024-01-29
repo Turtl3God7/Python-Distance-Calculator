@@ -41,7 +41,7 @@ except FileNotFoundError:
     print("There is no saved data for this program")
 
 while True:
-    if carinfo != "":
+    if carinfo:
         time.sleep(2)
         print("Please add your car")
         time.sleep(2)
@@ -83,11 +83,10 @@ while True:
                 else:
                     continue
         else:
-            carlen = len(carinfo) // 4
             carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
             
             i = 0
-            for carinfo in carlen:
+            for i in range(0, len(carinfo), 4):
                 print(carinfo[i])
                 i += 4
             carinput = (carinput-1)*4
@@ -110,7 +109,7 @@ while True:
     finally:
         if ecount >= 60:
             quitput = input("Do you want to quit trying to save?\nThis will mean that any new data will be lost.")
-            if quitput in yeslist:
+            if quitput.lower() in yeslist:
                 break
 print("Thank you for setting up you car")
 time.sleep(2)
@@ -129,14 +128,8 @@ des1 = get_numeric_input("Input your destination's Y position")
 des = int(des) - int(carpos[0])
 des1 = int(des1) - int(carpos[1])
 
-# Redundant version
-if des < 0:
-    des * -1
-if des1 < 0:
-    des1 * -1
-
 # Integer Fix
-des = abs(des1)
+des = abs(des)
 des1 = abs(des1)
     
 des = des + des1
