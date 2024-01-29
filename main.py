@@ -17,10 +17,29 @@ def get_numeric_input(prompt):
             attempts += 1
             if attempts >= 2:
                 print("Try removing any special characters like commas")
+                
 def caps(prompt):
     prompt = input(prompt)
     prompt = prompt.title()
     return prompt
+
+def caradd(prompt):
+    print("Please add your car")
+        time.sleep(2)
+        prompt = Vehicle()
+        prompt.name = caps("What is the name of your car?")
+        prompt.kind = input("What kind of car do you have?")
+        prompt.color = input("What is the color of your car?")
+        prompt.value = get_numeric_input("What is the value of the car?")
+        print("Is your car a " + prompt.description())
+        iinp = input()
+        if iinp.lower() in yeslist:
+            carinfo.append(prompt.info)
+            car = prompt
+            break
+        else:
+            continue
+            
 # Code from https://www.learnpython.org/en/Classes_and_Objects
 class Vehicle:
     name = ""
@@ -32,8 +51,8 @@ class Vehicle:
         return desc_str
     def info(self):
         return self.name, self.kind, self.color, self.value
-carinfo = [] 
 
+carinfo = [] 
 try:
     with open('carinfo.pkl', 'rb') as f:
         carinfo = pickle.load(f)
@@ -43,45 +62,17 @@ except FileNotFoundError:
 while True:
     if carinfo:
         time.sleep(2)
-        print("Please add your car")
-        time.sleep(2)
-        car1 = Vehicle()
-        car1.name = caps("What is the name of your car?")
-        car1.kind = input("What kind of car do you have?")
-        car1.color = input("What is the color of your car?")
-        car1.value = get_numeric_input("What is the value of the car?")
-        print("Is your car a " + car1.description())
-        iinp = input()
-        if iinp.lower() in yeslist:
-            carinfo.append(car1.info)
-            car = car1
-            break
-        else:
-            continue
+        caradd(car1)
     else:
         newcar = input("Do you want to create a new car?")
         if newcar.lower() in yeslist:
             while True:
                 previouscar = carinfo[::-4]
                 previouscar = len(previouscar)
-                previouscar+=1
+                previouscar += 1
                 previouscar = str(previouscar)
-                newcar = car + previouscar
-                print("Please add your car")
-                time.sleep(2)
-                newcar = Vehicle()
-                newcar.name = caps("What is the name of your car?")
-                newcar.kind = input("What kind of car do you have?")
-                newcar.color = input("What is the color of your car?")
-                newcar.value = get_numeric_input("What is the value of the car?")
-                print("Is your car a " + newcar.description())
-                iinp = input()
-                if iinp.lower() in yeslist:
-                    carinfo.append(newcar)
-                    car = newcar
-                    break
-                else:
-                    continue
+                newcar = "car" + previouscar
+                caradd(newcar)
         else:
             carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
             
@@ -101,8 +92,11 @@ while True:
             pickle.dump(carinfo, f)
             f.close()
     except Exception as e:
-        print(f"An error occurred: {e}")
         ecount += 1
+        print(f"An error occurred: {e}")
+        if ecount >= 2:
+            print(\rf"An error occured: {e} x{ecount}")
+            sys.stdout.flush()
     else:
         print("File Save Successful!")
         break
