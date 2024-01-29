@@ -41,7 +41,7 @@ except FileNotFoundError:
     print("There is no saved data for this program")
 
 while True:
-    if carinfo != "":
+    if carinfo:
         time.sleep(2)
         print("Please add your car")
         time.sleep(2)
@@ -52,7 +52,7 @@ while True:
         car1.value = get_numeric_input("What is the value of the car?")
         print("Is your car a " + car1.description())
         iinp = input()
-        if iinp in yeslist:
+        if iinp.lower() in yeslist:
             carinfo.append(car1.info)
             car = car1
             break
@@ -60,7 +60,7 @@ while True:
             continue
     else:
         newcar = input("Do you want to create a new car?")
-        if newcar in yeslist:
+        if newcar.lower() in yeslist:
             while True:
                 previouscar = carinfo[::-4]
                 previouscar = len(previouscar)
@@ -83,16 +83,17 @@ while True:
                 else:
                     continue
         else:
-            carlen = len(carinfo) // 4
             carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
-            for carinfo in carlen:
-                i = 0
+            
+            i = 0
+            for i in range(0, len(carinfo), 4):
                 print(carinfo[i])
                 i += 4
             carinput = (carinput-1)*4
             car = carinfo[carinput]
             print(f"Your current car is {car}")
             break
+ecount = 0
 while True:
     print("Saving Data")
     try:
@@ -101,10 +102,15 @@ while True:
             f.close()
     except Exception as e:
         print(f"An error occurred: {e}")
+        ecount += 1
     else:
         print("File Save Successful!")
         break
-    
+    finally:
+        if ecount >= 60:
+            quitput = input("Do you want to quit trying to save?\nThis will mean that any new data will be lost.")
+            if quitput.lower() in yeslist:
+                break
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
@@ -123,8 +129,9 @@ des = int(des) - int(carpos[0])
 des1 = int(des1) - int(carpos[1])
 
 # Integer Fix
-des = abs(des1)
+des = abs(des)
 des1 = abs(des1)
+    
 des = des + des1
 
 #0 problem
