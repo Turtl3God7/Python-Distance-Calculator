@@ -76,7 +76,7 @@ while True:
                 newcar.value = get_numeric_input("What is the value of the car?")
                 print("Is your car a " + newcar.description())
                 iinp = input()
-                if iinp in yeslist:
+                if iinp.lower() in yeslist:
                     carinfo.append(newcar)
                     car = newcar
                     break
