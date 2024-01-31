@@ -5,7 +5,13 @@ import sys
 #module used across the code for dramatic effect
 import time
 
-yeslist = ("yes","y","of course","yea")
+# Yes List with the Extension Plus Feature
+yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","aye",
+"positively","all right","yo","certainly","absolutely","exactly","indeed","okeydokey",
+"undoubtedly","assuredly","unquestionably","indisputably","all right","alright","very well",
+"of course","by all means","sure","certainly","absolutely","indeed","affirmative","in the affirmative",
+"agreed","roger","aye","aye aye","yeah","yah","yep","yup","uh-huh","okay","OK","okey-dokey","okey-doke",
+"achcha","righto","righty-ho","surely","yea"]
 
 def get_numeric_input(prompt):
     attempts = 0
