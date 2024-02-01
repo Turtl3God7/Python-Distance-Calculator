@@ -2,8 +2,11 @@
 import pickle
 # Module used for forcefully ending the program
 import sys
-#module used across the code for dramatic effect
+# Module used across the code for dramatic effect
 import time
+# Module to specify which path to save the file carinfo
+from pathlib import path
+savepath = Path(".") / "%userprofile%" / "downloads"
 
 # Yes List with the Extension Plus Feature
 yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","aye",
@@ -48,7 +51,7 @@ class Vehicle:
 
 carinfo = [] 
 try:
-    with open('carinfo.pkl', 'rb') as f:
+    with open(savepath.'carinfo.pkl', 'rb') as f:
         carinfo = pickle.load(f)
 except FileNotFoundError:
     print("There is no saved data for this program")
@@ -111,7 +114,7 @@ ecount = 0
 while True:
     print("Saving Data")
     try:
-        with open('carinfo.pkl', 'wb') as f:
+        with open(savepath, 'wb') as f:
             pickle.dump(carinfo, f)
     except Exception as e:
         ecount += 1
