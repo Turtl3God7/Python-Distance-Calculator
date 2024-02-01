@@ -116,10 +116,11 @@ while True:
             f.close()
     except Exception as e:
         ecount += 1
-        print(f"An error occurred: {e}")
         if ecount >= 2:
             print(f"\rAn error occured: {e} x{ecount}")
             sys.stdout.flush()
+        else:
+            print(f"An error occurred: {e}")
     else:
         print("File Save Successful!")
         break
