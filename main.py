@@ -113,14 +113,13 @@ while True:
     try:
         with open('carinfo.pkl', 'wb') as f:
             pickle.dump(carinfo, f)
-            f.close()
     except Exception as e:
         ecount += 1
-        if ecount >= 2:
+        if ecount <= 2:
+            print(f"An error occurred: {e}")
+        else:
             print(f"\rAn error occured: {e} x{ecount}")
             sys.stdout.flush()
-        else:
-            print(f"An error occurred: {e}")
     else:
         print("File Save Successful!")
         break
@@ -152,7 +151,7 @@ des1 = abs(des1)
     
 des = des + des1
 
-#0 problem
+# What happens if the distance to get somewhere is 0
 
 if des == 0:
     print("Why did you input the same coordinates twice?")
