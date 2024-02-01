@@ -2,10 +2,20 @@
 import pickle
 # Module used for forcefully ending the program
 import sys
-#module used across the code for dramatic effect
+# Module used across the code for dramatic effect
 import time
+# Module to specify which path to save the file carinfo
+from pathlib import Path
+from os import getenv
+savepath = Path(getenv('USERPROFILE')) / "downloads"
 
-yeslist = ("yes","y","of course","yea")
+# Yes List with the Extension Plus Feature
+yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","aye",
+"positively","all right","yo","certainly","absolutely","exactly","indeed","okeydokey",
+"undoubtedly","assuredly","unquestionably","indisputably","all right","alright","very well",
+"of course","by all means","sure","certainly","absolutely","indeed","affirmative","in the affirmative",
+"agreed","roger","aye","aye aye","yeah","yah","yep","yup","uh-huh","okay","OK","okey-dokey","okey-doke",
+"achcha","righto","righty-ho","surely","yea"]
 
 def get_numeric_input(prompt):
     attempts = 0
@@ -17,10 +27,17 @@ def get_numeric_input(prompt):
             attempts += 1
             if attempts >= 2:
                 print("Try removing any special characters like commas")
+                
 def caps(prompt):
     prompt = input(prompt)
     prompt = prompt.title()
     return prompt
+
+def savetolist(prompt):
+    carinfo.append(prompt.name)
+    carinfo.append(prompt.kind)
+    carinfo.append(prompt.color)
+    carinfo.append(prompt.value)
 # Code from https://www.learnpython.org/en/Classes_and_Objects
 class Vehicle:
     name = ""
@@ -32,16 +49,16 @@ class Vehicle:
         return desc_str
     def info(self):
         return self.name, self.kind, self.color, self.value
-carinfo = [] 
 
+carinfo = [] 
 try:
-    with open('carinfo.pkl', 'rb') as f:
+    with open(savepath / 'carinfo.pkl', 'rb') as f:
         carinfo = pickle.load(f)
 except FileNotFoundError:
     print("There is no saved data for this program")
 
 while True:
-    if carinfo:
+    if not carinfo:
         time.sleep(2)
         print("Please add your car")
         time.sleep(2)
@@ -53,7 +70,7 @@ while True:
         print("Is your car a " + car1.description())
         iinp = input()
         if iinp.lower() in yeslist:
-            carinfo.append(car1.info)
+            savetolist(car1)
             car = car1
             break
         else:
@@ -62,11 +79,7 @@ while True:
         newcar = input("Do you want to create a new car?")
         if newcar.lower() in yeslist:
             while True:
-                previouscar = carinfo[::-4]
-                previouscar = len(previouscar)
-                previouscar+=1
-                previouscar = str(previouscar)
-                newcar = car + previouscar
+                newcar = str(len(carinfo) // 4 + 1)
                 print("Please add your car")
                 time.sleep(2)
                 newcar = Vehicle()
@@ -77,7 +90,7 @@ while True:
                 print("Is your car a " + newcar.description())
                 iinp = input()
                 if iinp.lower() in yeslist:
-                    carinfo.append(newcar)
+                    savetolist(newcar)
                     car = newcar
                     break
                 else:
@@ -93,16 +106,16 @@ while True:
             car = carinfo[carinput]
             print(f"Your current car is {car}")
             break
+
 ecount = 0
 while True:
     print("Saving Data")
     try:
-        with open('carinfo.pkl', 'wb') as f:
+        with open(savepath / 'carinfo.pkl', 'wb') as f:
             pickle.dump(carinfo, f)
-            f.close()
     except Exception as e:
-        print(f"An error occurred: {e}")
         ecount += 1
+        print(f"An error occurred: {e}. Attempt {ecount}")
     else:
         print("File Save Successful!")
         break
@@ -134,7 +147,7 @@ des1 = abs(des1)
     
 des = des + des1
 
-#0 problem
+# What happens if the distance to get somewhere is 0
 
 if des == 0:
     print("Why did you input the same coordinates twice?")
