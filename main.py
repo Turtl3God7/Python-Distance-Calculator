@@ -5,8 +5,9 @@ import sys
 # Module used across the code for dramatic effect
 import time
 # Module to specify which path to save the file carinfo
-from pathlib import path
-savepath = Path(".") / "%userprofile%" / "downloads"
+from pathlib import Path
+from os import getenv
+savepath = Path(getenv('USERPROFILE')) / "downloads"
 
 # Yes List with the Extension Plus Feature
 yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","aye",
@@ -51,7 +52,7 @@ class Vehicle:
 
 carinfo = [] 
 try:
-    with open(savepath.'carinfo.pkl', 'rb') as f:
+    with open(savepath / 'carinfo.pkl', 'rb') as f:
         carinfo = pickle.load(f)
 except FileNotFoundError:
     print("There is no saved data for this program")
@@ -78,11 +79,7 @@ while True:
         newcar = input("Do you want to create a new car?")
         if newcar.lower() in yeslist:
             while True:
-                previouscar = carinfo[::-4]
-                previouscar = len(previouscar)
-                previouscar += 1
-                previouscar = str(previouscar)
-                newcar = "car" + previouscar
+                newcar = str(len(carinfo) // 4 + 1)
                 print("Please add your car")
                 time.sleep(2)
                 newcar = Vehicle()
@@ -114,15 +111,11 @@ ecount = 0
 while True:
     print("Saving Data")
     try:
-        with open(savepath, 'wb') as f:
+        with open(savepath / 'carinfo.pkl', 'wb') as f:
             pickle.dump(carinfo, f)
     except Exception as e:
         ecount += 1
-        if ecount <= 2:
-            print(f"An error occurred: {e}")
-        else:
-            print(f"\rAn error occured: {e} x{ecount}")
-            sys.stdout.flush()
+        print(f"An error occurred: {e}. Attempt {ecount}")
     else:
         print("File Save Successful!")
         break
