@@ -9,6 +9,10 @@ The unit blocks are supposed to represent a normal city block and they are 1/20t
 
 Credits:
 
-Thank you to the creators of the time and sys modules as the code would have been a lot harder to make.
+Thank you to the creators of the time, sys, os modules and many other modules used in the code as the code would have been a lot harder to make.
 Also, thanks to https.learnpython.com as I borrowed and modified some code for them to make the car class
+Also, thanks to @Magnus-Thomsen for the SQL database from code. I have linked his GitHub below and go check him out!
+
+https://github.com/Magnus-Thomsen
+
 > Bai 🐢༼ つ ◕‿◕ ༽つ
