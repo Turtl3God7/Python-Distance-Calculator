@@ -3,5 +3,5 @@ class Car:
         self.brand = brand
         self.price = price
         self.year = year
-        self.licensePlate = licensePlate
+        self.type = cartype
         self.isLeasingCar = isLeasingCar
