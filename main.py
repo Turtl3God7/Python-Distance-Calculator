@@ -15,36 +15,6 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 
-# Yes List with the Extension Plus Feature
-yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","aye",
-"positively","all right","yo","certainly","absolutely","exactly","indeed","okeydokey",
-"undoubtedly","assuredly","unquestionably","indisputably","all right","alright","very well",
-"of course","by all means","sure","certainly","absolutely","indeed","affirmative","in the affirmative",
-"agreed","roger","aye","aye aye","yeah","yah","yep","yup","uh-huh","okay","OK","okey-dokey","okey-doke",
-"achcha","righto","righty-ho","surely","yea"]
-
-def get_numeric_input(prompt):
-    attempts = 0
-    while True:
-        try:
-            return float(input(prompt))
-        except ValueError:
-            print("Please enter a valid numerical value.")
-            attempts += 1
-            if attempts >= 2:
-                print("Try removing any special characters like commas")
-                
-def caps(prompt):
-    prompt = input(prompt)
-    prompt = prompt.title()
-    return prompt
-
-def savetolist(prompt):
-    carinfo.append(prompt.name)
-    carinfo.append(prompt.kind)
-    carinfo.append(prompt.color)
-    carinfo.append(prompt.value)
-
 # making a clear function to clear the console
 def clear():
     # for windows
@@ -87,7 +57,19 @@ def intro():
     print("4. Update a car")
     print("5. Pick a car to continue")
     print("6. Exit")
-    choice = get_numeric_input("What do you choose? Enter number\n")
+    userInput = input("What do you choose? Enter number\n")
+    switch = 0
+    while switch == 0:
+        try:
+            int(userInput)
+        except ValueError:
+            clear()
+            print("This is not a number")
+            input("Press enter to continue")
+            intro()
+        else:
+            switch = 1
+    choice = int(userInput)
     if choice == 1:
         showOne()
     elif choice == 2:
@@ -99,8 +81,8 @@ def intro():
     elif choice == 5:
         showAll()
     elif choice == 6:
+        clear()
         print("Saving cars and exiting program")
-        sys.exit
     else:
         print("This is not an option")
         input("Press enter to continue")
@@ -176,13 +158,29 @@ def add():
                 db.commit()
                 intro()
     else:
-        priceInput = get_numeric_input(input('What is the price of the car?\n'))
-        
-        yearInput = get_numeric_input("What year is the car from?\n"))
-    
+        switch = 0
+        while switch == 0:
+            try:
+                priceInput = float(input('What is the price of the car?\n'))
+            except ValueError:
+                clear()
+                print("This is not a number")
+                input("Press enter to continue")
+            else:
+                switch = 1
+        switch = 0
+        while switch == 0:
+            try:
+                yearInput = int(input("What year is the car from?\n"))
+            except ValueError:
+                clear()
+                print("This is not a number")
+                input("Press enter to continue")
+            else:
+                switch = 1
         licensePlateInput = input("What is the license plate if the car?\n")
         isLeasingCarInput = input("Is the car leased?\n").lower()
-        if isLeasingCarInput in yeslist:
+        if isLeasingCarInput.startswith("j" or "y"):
             cursor.execute(''' INSERT INTO cars(brand, price, year, licensePlate, isLeasingCar) VALUES (?,?,?,?,?) ''',
                            (brandInput.capitalize(), priceInput, yearInput, licensePlateInput, 1))
         else:
@@ -343,7 +341,6 @@ def update():
 
 
 def showOne():
-    carinfo = [] 
     clear()
     sqlSearch = ''' SELECT * from cars WHERE brand =?'''
     sqlData = (input("Search for car brand: "))
@@ -351,7 +348,7 @@ def showOne():
     if cur.fetchone():
         clear()
         cur = cursor.execute(sqlSearch, (sqlData.capitalize(),))
-        t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "License plate", "Is car leased?"])
+        t = PrettyTable(["ID", "Brand", "Price [kr.]", "Year", "License plate", "Is car leased?"])
         print("Showing results for", sqlData)
         for row in cur:
             if row[5]:
@@ -362,19 +359,20 @@ def showOne():
         print(t)
         carpick = input("Is this car correct?")
         if carpick in yeslist:
-            carlist.append(row[0], row[1], row[2], row[3])
-            return carlist
+            carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
     else:
         clear()
         print("There was no results for the brand", sqlData + ".")
-        userInput = input("Do you want to add a new car?\nPress a\nDo you want to restart?\nPress r\nOtherwise Press Enter to continue").lower()
-        if userInput == "a":
+        userInput = input("Do you want to add a new car?\n").lower()
+        print(userInput)
+        if userInput.startswith("j" or "y"):
             add()
-        elif userInput == "r":
-            showOne()
         else:
             intro()
+    intro()
 
+
+intro()
 
 db.commit()
 db.close()
