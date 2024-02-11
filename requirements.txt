@@ -1,0 +1,4 @@
+beautifulsoup4==4.12.3
+bs4==0.0.2
+prettytable==3.9.0
+urllib3==2.2.0
