@@ -1,61 +1,73 @@
-# Module for data serialization of a list
-import pickle
+# Module used across code to gain info about client operating system
+import os
 # Module used for forcefully ending the program
 import sys
 # Module used across the code for dramatic effect
 import time
-# Module to specify which path to save the file carinfo
-from pathlib import Path
-savepath = Path(getenv('USERPROFILE')) / "downloads"
+# SQL module
 import sqlite3
-from Car import Car
-import os
+# Module used to make SQl tables prettier
 from prettytable import PrettyTable
+# Import from support file "Car.py"
+from Car import Car
+# Data Scraper for SQL table add() function
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 
+
+# Yes List with the Extension Plus Feature
+# Note: Would be easier if we find a module to do this for us (looks kinda messy)
+yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","aye",
+"positively","all right","yo","certainly","absolutely","exactly","indeed","okeydokey",
+"undoubtedly","assuredly","unquestionably","indisputably","all right","alright","very well",
+"of course","by all means","sure","certainly","absolutely","indeed","affirmative","in the affirmative",
+"agreed","roger","aye","aye aye","yeah","yah","yep","yup","uh-huh","okay","OK","okey-dokey","okey-doke",
+"achcha","righto","righty-ho","surely","yea"]
+
+def get_numeric_input(prompt):
+    attempts = 0
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Please enter a valid numerical value.")
+            attempts += 1
+            if attempts >= 2:
+                print("Try removing any special characters like commas")
+
+def caps(prompt):
+    prompt = input(prompt)
+    prompt = prompt.title()
+    return prompt
+
+    
+name = os.name
 # making a clear function to clear the console
 def clear():
-    # for windows
     if name == 'nt':
-        _ = system('cls')
+        _ = os.system('cls')
  
-    # for mac and linux
+    # for mac and linux(here, os.name is 'posix')
     else:
-        _ = system('clear')
+        _ = os.system('clear')
 
 db = sqlite3.connect("carDB.sqlite3")
 cursor = db.cursor()
 
 carList = []
-
-# Automatically creates a new table in the database if there are none existing already.
-cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='cars' ''')
-if cursor.fetchone()[0] != 1:
-    cursor.execute(
-        '''CREATE TABLE cars(id INTEGER PRIMARY KEY, brand TEXT, price INTEGER, year INTEGER, licensePlate TEXT, 
-        isLeasingCar BOOLEAN)''')
-    carList.append(Car("Mercedes", 950000, 2018, "AB07354", 1))
-    carList.append(Car("Citroën", 60000, 2013, "B012345", 0))
-    carList.append(Car("BMW", 567000, 2020, "SC60856", 0))
-
-    for c in carList:
-        cursor.execute(''' INSERT INTO cars(brand, price, year, licensePlate, isLeasingCar) VALUES (?,?,?,?,?) ''',
-                       (c.brand, c.price, c.year, c.licensePlate, c.isLeasingCar))
-        db.commit()
-
+carlist = []
 
 def intro():
     clear()
     cursor.execute("SELECT COUNT (*) FROM cars")
     rowcount = cursor.fetchone()[0]
     print("There is ", rowcount, " cars in the database.")
-    print("1. Pick a car")
+    print("1. Pick a car to continue")
     print("2. Add a car")
     print("3. Remove a car")
     print("4. Update a car")
-    print("5. Pick a car to continue")
+    print("5. Show all cars")
     print("6. Exit")
     userInput = input("What do you choose? Enter number\n")
     switch = 0
@@ -83,6 +95,7 @@ def intro():
     elif choice == 6:
         clear()
         print("Saving cars and exiting program")
+        sys.exit()
     else:
         print("This is not an option")
         input("Press enter to continue")
@@ -92,7 +105,7 @@ def intro():
 def showAll():
     clear()
     cur = cursor.execute("SELECT * from cars")
-    t = PrettyTable(["ID", "Brand", "Price [kr.]", "Year", "License plate", "Is car leased?"])
+    t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "Car Type", "Is car leased?"])
     for row in cur:
         if row[5]:
             leasing = "Yes"
@@ -145,16 +158,16 @@ def add():
                 if len(yearSplit) > 0:
                     yearOutput = re.sub('\D', '', yearSplit[4])
 
-                licensePlateInput = input("What is the license plate if the car?\n")
+                cartypeInput = input("What type of car is it?\n")
                 isLeasingCarInput = input("Is the car leased?\n").lower()
                 if isLeasingCarInput.startswith("j" or "y"):
                     cursor.execute(
-                        ''' INSERT INTO cars(brand, price, year, licensePlate, isLeasingCar) VALUES (?,?,?,?,?) ''',
-                        (title, priceOutput, yearOutput, licensePlateInput, 1))
+                        ''' INSERT INTO cars(brand, price, year, cartype, isLeasingCar) VALUES (?,?,?,?,?) ''',
+                        (title, priceOutput, yearOutput, cartypeInput, 1))
                 else:
                     cursor.execute(
-                        ''' INSERT INTO cars(brand, price, year, licensePlate, isLeasingCar) VALUES (?,?,?,?,?) ''',
-                        (title, priceOutput, yearOutput, licensePlateInput, 0))
+                        ''' INSERT INTO cars(brand, price, year, cartype, isLeasingCar) VALUES (?,?,?,?,?) ''',
+                        (title, priceOutput, yearOutput, cartypeInput, 0))
                 db.commit()
                 intro()
     else:
@@ -178,22 +191,22 @@ def add():
                 input("Press enter to continue")
             else:
                 switch = 1
-        licensePlateInput = input("What is the license plate if the car?\n")
+        cartypeInput = input("What type of car is it?\n")
         isLeasingCarInput = input("Is the car leased?\n").lower()
         if isLeasingCarInput.startswith("j" or "y"):
-            cursor.execute(''' INSERT INTO cars(brand, price, year, licensePlate, isLeasingCar) VALUES (?,?,?,?,?) ''',
-                           (brandInput.capitalize(), priceInput, yearInput, licensePlateInput, 1))
+            cursor.execute(''' INSERT INTO cars(brand, price, year, cartype, isLeasingCar) VALUES (?,?,?,?,?) ''',
+                           (brandInput.capitalize(), priceInput, yearInput, cartypeInput, 1))
         else:
-            cursor.execute(''' INSERT INTO cars(brand, price, year, licensePlate, isLeasingCar) VALUES (?,?,?,?,?) ''',
-                           (brandInput.capitalize(), priceInput, yearInput, licensePlateInput, 0))
+            cursor.execute(''' INSERT INTO cars(brand, price, year, cartype, isLeasingCar) VALUES (?,?,?,?,?) ''',
+                           (brandInput.capitalize(), priceInput, yearInput, cartypeInput, 0))
         db.commit()
         intro()
 
 
 def remove():
     clear()
-    cur = cursor.execute("SELECT id, brand, price, year, licensePlate, isLeasingCar from cars")
-    t = PrettyTable(["ID", "Brand", "Price [kr.]", "Year", "License plate", "Is car leased?"])
+    cur = cursor.execute("SELECT id, brand, price, year, cartype, isLeasingCar from cars")
+    t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "Car Type", "Is car leased?"])
     for row in cur:
         if row[5]:
             leasing = "Ja"
@@ -227,8 +240,8 @@ def remove():
 
 def update():
     clear()
-    cur = cursor.execute("SELECT id, brand, price, year, licensePlate, isLeasingCar from cars")
-    t = PrettyTable(["ID", "Brand", "Price [kr.]", "Year", "License plate", "Is car leased?"])
+    cur = cursor.execute("SELECT id, brand, price, year, cartype, isLeasingCar from cars")
+    t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "Car Type", "Is car leased?"])
     for row in cur:
         if row[5]:
             leasing = "Yes"
@@ -262,7 +275,7 @@ def update():
                 print("1. Brand:", row[1])
                 print("2. Price:", row[2])
                 print("3. Year:", row[3])
-                print("4. License plate:", row[4])
+                print("4. Car Type:", row[4])
                 if row[5] == 0:
                     print("5. Leasing status: The car is not leased")
                 else:
@@ -320,8 +333,8 @@ def update():
                 db.commit()
             if int(userInput) == 4:
                 clear()
-                sqlUpdate = ''' UPDATE cars SET licensePlate =? WHERE id =? '''
-                sqlData = input("What is the new license plate for the car?\n")
+                sqlUpdate = ''' UPDATE cars SET cartype =? WHERE id =? '''
+                sqlData = input("What is the updated car type?\n")
                 cursor.execute(sqlUpdate, (sqlData, int(carID),))
                 db.commit()
             if int(userInput) == 5:
@@ -342,35 +355,89 @@ def update():
 
 def showOne():
     clear()
-    sqlSearch = ''' SELECT * from cars WHERE brand =?'''
-    sqlData = (input("Search for car brand: "))
-    cur = cursor.execute(sqlSearch, (sqlData.capitalize(),))
-    if cur.fetchone():
-        clear()
+    searchtype = input("Do you want to search by Brand or ID\nPress 'b' for brand or 'i' for ID")
+    print("Note, it is recommended to use Brand search first in case if you have multiple cars of the same brand")
+    if searchtype == "b":
+        sqlSearch = ''' SELECT * from cars WHERE brand =?'''
+        sqlData = (input("Search for car brand: "))
         cur = cursor.execute(sqlSearch, (sqlData.capitalize(),))
-        t = PrettyTable(["ID", "Brand", "Price [kr.]", "Year", "License plate", "Is car leased?"])
-        print("Showing results for", sqlData)
-        for row in cur:
-            if row[5]:
-                leasing = "Yes"
-            else:
-                leasing = "No"
+        if cur.fetchone():
+            clear()
+            cur = cursor.execute(sqlSearch, (sqlData.capitalize(),))
+            t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "Car Type", "Is car leased?"])
+            print("Showing results for", sqlData)
+            for row in cur:
+                if row[5]:
+                    leasing = "Yes"
+                else:
+                    leasing = "No"
             t.add_row([row[0], row[1], row[2], row[3], row[4], leasing])
-        print(t)
-        carpick = input("Is this car correct?")
-        if carpick in yeslist:
-            carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
-    else:
-        clear()
-        print("There was no results for the brand", sqlData + ".")
-        userInput = input("Do you want to add a new car?\n").lower()
-        print(userInput)
-        if userInput.startswith("j" or "y"):
-            add()
+            print(t)
+            carpick = input("Is this car correct?")
+            if carpick in yeslist:
+                carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
+            else:
+                caryes = input("Sorry about that\nWould you like to try again press 'a' or restart? press 'r'")
+                try:
+                    if caryes == "a":
+                        showOne()
+                except:
+                    print("That value isn't accepted")
+                else:
+                    if caryes == "r":
+                        intro()
         else:
-            intro()
-    intro()
-
+            clear()
+            print("There was no results for the brand", sqlData + ".")
+            userInput = input("Do you want to add a new car?\n").lower()
+            print(userInput)
+            if userInput in yeslist:
+                add()
+            else:
+                intro()
+        intro()
+    elif searchtype == "i":
+        sqlSearch = ''' SELECT * from cars WHERE ID =?'''
+        sqlData = (input("Search for car ID: "))
+        cur = cursor.execute(sqlSearch, (sqlData.capitalize(),))
+        if cur.fetchone():
+            clear()
+            cur = cursor.execute(sqlSearch, (sqlData.capitalize(),))
+            t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "Car Type", "Is car leased?"])
+            print("Showing results for", sqlData)
+            for row in cur:
+                if row[5]:
+                    leasing = "Yes"
+                else:
+                    leasing = "No"
+            t.add_row([row[0], row[1], row[2], row[3], row[4], leasing])
+            print(t)
+            carpick = input("Is this car correct?")
+            if carpick in yeslist:
+                carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
+            else:
+                caryes = input("Sorry about that\nWould you like to try again press 'a' or restart? press 'r'")
+                try:
+                    if caryes == "a":
+                        showOne()
+                except:
+                    print("That value isn't accepted")
+                else:
+                    if caryes == "r":
+                        intro()
+        else:
+            clear()
+            print("There was no results for the ID", sqlData + ".")
+            userInput = input("Do you want to add a new car?\n").lower()
+            print(userInput)
+            if userInput in yeslist:
+                add()
+            else:
+                intro()
+    else:
+        print("That is not a valid input")
+        clear()
+        showOne()
 
 intro()
 
@@ -378,92 +445,6 @@ db.commit()
 db.close()
 
 
-# Code from https://www.learnpython.org/en/Classes_and_Objects
-#class Vehicle:
-    #name = ""
-    #kind = "car"
-    #color = ""
-    #value = 100.00
-    #def description(self):
-        #desc_str = "%s %s that is named %s and has a value of %.2f" % (self.color, self.kind, self.name, self.value)
-        #return desc_str
-    #def info(self):
-        #return self.name, self.kind, self.color, self.value
-
-
-try:
-    with open(savepath / 'carinfo.pkl', 'rb') as f:
-        carinfo = pickle.load(f)
-except FileNotFoundError:
-    print("There is no saved data for this program")
-
-while True:
-    if not carinfo:
-        time.sleep(2)
-        print("Please add your car")
-        time.sleep(2)
-        car1 = Vehicle()
-        car1.name = caps("What is the name of your car?")
-        car1.kind = input("What kind of car do you have?")
-        car1.color = input("What is the color of your car?")
-        car1.value = get_numeric_input("What is the value of the car?")
-        print("Is your car a " + car1.description())
-        iinp = input()
-        if iinp.lower() in yeslist:
-            savetolist(car1)
-            car = car1
-            break
-        else:
-            continue
-    else:
-        newcar = input("Do you want to create a new car?")
-        if newcar.lower() in yeslist:
-            while True:
-                newcar = str(len(carinfo) // 4 + 1)
-                print("Please add your car")
-                time.sleep(2)
-                newcar = Vehicle()
-                newcar.name = caps("What is the name of your car?")
-                newcar.kind = input("What kind of car do you have?")
-                newcar.color = input("What is the color of your car?")
-                newcar.value = get_numeric_input("What is the value of the car?")
-                print("Is your car a " + newcar.description())
-                iinp = input()
-                if iinp.lower() in yeslist:
-                    savetolist(newcar)
-                    car = newcar
-                    break
-                else:
-                    continue
-        else:
-            carinput = get_numeric_input("Pick the car you want to use in the order it is shown in")
-            
-            i = 0
-            for i in range(0, len(carinfo), 4):
-                print(carinfo[i])
-                i += 4
-            carinput = (carinput-1)*4
-            car = carinfo[carinput]
-            print(f"Your current car is {car}")
-            break
-
-ecount = 0
-while True:
-    print("Saving Data")
-    try:
-        with open(savepath / 'carinfo.pkl', 'wb') as f:
-            pickle.dump(carinfo, f)
-    except Exception as e:
-        ecount += 1
-        print(f"An error occurred: {e}. Attempt {ecount}")
-    else:
-        print("File Save Successful!")
-        break
-    finally:
-        if ecount >= 60:
-            quitput = input("Do you want to quit trying to save?\nThis will mean that any new data will be lost.")
-            if quitput.lower() in yeslist:
-                break
 print("Thank you for setting up you car")
 time.sleep(2)
 print("You may now calculate how long it will take for your car to reach it's destination and how far the destination is")
@@ -514,7 +495,7 @@ value_coefficients = {
 
 # Find the appropriate coefficient based on car.value
 for threshold, coefficient in sorted(value_coefficients.items(), reverse=True):
-    if car.value >= threshold:
+    if carlist[3] >= threshold:
         ime = coefficient * des
         break
 else:
