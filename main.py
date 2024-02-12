@@ -41,16 +41,15 @@ def caps(prompt):
     prompt = prompt.title()
     return prompt
 
-    
-name = os.name
+
 # making a clear function to clear the console
+name = os.name
 def clear():
     if name == 'nt':
-        _ = os.system('cls')
- 
-    # for mac and linux(here, os.name is 'posix')
+        os.system('cls')
+    # for mac and linux
     else:
-        _ = os.system('clear')
+        os.system('clear')
 
 db = sqlite3.connect("carDB.sqlite3")
 cursor = db.cursor()
