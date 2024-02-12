@@ -453,10 +453,18 @@ time.sleep(2)
 carpos = []
 carx = get_numeric_input("What is your car's starting X position?")
 carpos.append(carx)
+clear()
 cary = get_numeric_input("What is your car's starting Y position?")
 carpos.append(cary)
+clear()
 des = get_numeric_input("Input your destination's X position")
+clear()
 des1 = get_numeric_input("Input your destination's Y position")
+clear()
+#Row Magic
+t = PrettyTable([" ","X Position", "Y Position"])
+t.add_row(["Starting Position", carx, cary])
+t.add_row(["Ending Location", des, des1])
 #calc
 des = int(des) - int(carpos[0])
 des1 = int(des1) - int(carpos[1])
@@ -464,7 +472,9 @@ des1 = int(des1) - int(carpos[1])
 # Integer Fix
 des = abs(des)
 des1 = abs(des1)
-    
+
+# Row Magic Pt.2
+t.add_row(["Delta", des, des1])
 des = des + des1
 
 # What happens if the distance to get somewhere is 0
@@ -478,7 +488,8 @@ print(f"Your car will have to drive {des} blocks to reach your destination!")
 
 #block to mile
 miles = des / 20
-
+print("According to the information you have given")
+print(t)
 print(f"Your car will have to drive {miles} miles to reach your destination!")
 
 # car time calc(based on value)
