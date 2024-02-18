@@ -8,6 +8,9 @@ import time
 import sqlite3
 # Module used to make SQl tables prettier
 from prettytable import PrettyTable
+# Colors! because who dosen't like colors
+from termcolor import colored
+from colorama import just_fix_windows_console
 # Import from support file "Car.py"
 from Car import Car
 # Data Scraper for SQL table add() function
@@ -25,25 +28,8 @@ yeslist = ["yes","y","of course","yea","okay","yeah","ok","alright","yep","ay","
 "agreed","roger","aye","aye aye","yeah","yah","yep","yup","uh-huh","okay","OK","okey-dokey","okey-doke",
 "achcha","righto","righty-ho","surely","yea"]
 
-def get_numeric_input(prompt):
-    attempts = 0
-    while True:
-        try:
-            return float(input(prompt))
-        except ValueError:
-            print("Please enter a valid numerical value.")
-            attempts += 1
-            if attempts >= 2:
-                print("Try removing any special characters like commas")
-
-def caps(prompt):
-    prompt = input(prompt)
-    prompt = prompt.title()
-    return prompt
-
-
-# making a clear function to clear the console
 name = os.name
+# making a clear function to clear the console
 def clear():
     if name == 'nt':
         os.system('cls')
@@ -51,36 +37,73 @@ def clear():
     else:
         os.system('clear')
 
-db = sqlite3.connect("carDB.sqlite3")
+def get_numeric_input(prompt, function=None):
+    attempts = 0
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            attempts += 1
+            print("Please enter a valid numerical value.")
+            if attempts < 2:
+                time.sleep(1)
+                if function:
+                    function()
+                else:
+                    clear()
+            if attempts >= 2:
+                print("Try removing any special characters like commas")
+                time.sleep(1)
+                if function:
+                    function()
+                else:
+                    clear()
+
+def caps(prompt):
+    prompt = input(prompt)
+    prompt = prompt.title()
+    return prompt
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
+sql_name = "carDB.sqlite3"
+file_path = os.path.join(current_directory, sql_name)
+
+
+# Function that prints anything in red if there is no value in var
+just_fix_windows_console()
+def checkcars(message, num):
+    if num != 0:
+        return print(message)
+    else:
+        return print(colored(message, "red"))
+        
+
+
+db = sqlite3.connect(file_path)
 cursor = db.cursor()
 
-carList = []
-carlist = []
+
+currentcar = 0
 
 def intro():
     clear()
     cursor.execute("SELECT COUNT (*) FROM cars")
     rowcount = cursor.fetchone()[0]
     print("There is ", rowcount, " cars in the database.")
-    print("1. Pick a car to continue")
+    checkcars("1. Pick a car to continue", rowcount) 
     print("2. Add a car")
-    print("3. Remove a car")
-    print("4. Update a car")
-    print("5. Show all cars")
+    checkcars("3. Remove a car", rowcount)
+    checkcars("4. Update a car", rowcount)
+    checkcars("5. Show all cars", rowcount)
     print("6. Exit")
-    userInput = input("What do you choose? Enter number\n")
-    switch = 0
-    while switch == 0:
-        try:
-            int(userInput)
-        except ValueError:
-            clear()
-            print("This is not a number")
-            input("Press enter to continue")
-            intro()
-        else:
-            switch = 1
+    if rowcount != "":
+        part1 = "You can't choose any options that are "
+        part2 = colored("red", "red", attrs=["bold"])
+        print(part1 + part2)
+    userInput = get_numeric_input("What do you choose? Enter a number\n", intro)
     choice = int(userInput)
+    if choice in [1, 3, 4, 5] and rowcount == "":
+        intro()
     if choice == 1:
         showOne()
     elif choice == 2:
@@ -119,7 +142,8 @@ def showAll():
 def add():
     clear()
     print('What is the brand of the car? Write "a" to cancel\n')
-    brandInput = input('Or write "i" to import a car from bilhandel.dk\n')
+    print('Or write "i" to import a car from bilhandel.dk\n')
+    brandInput = input(colored("The website import doesn't work for now\n", "red", attrs=["bold", "underline"]))
     if brandInput.lower() == "a":
         intro()
     elif brandInput.lower() == "i":
@@ -159,7 +183,7 @@ def add():
 
                 cartypeInput = input("What type of car is it?\n")
                 isLeasingCarInput = input("Is the car leased?\n").lower()
-                if isLeasingCarInput.startswith("j" or "y"):
+                if isLeasingCarInput in yeslist:
                     cursor.execute(
                         ''' INSERT INTO cars(brand, price, year, cartype, isLeasingCar) VALUES (?,?,?,?,?) ''',
                         (title, priceOutput, yearOutput, cartypeInput, 1))
@@ -170,29 +194,11 @@ def add():
                 db.commit()
                 intro()
     else:
-        switch = 0
-        while switch == 0:
-            try:
-                priceInput = float(input('What is the price of the car?\n'))
-            except ValueError:
-                clear()
-                print("This is not a number")
-                input("Press enter to continue")
-            else:
-                switch = 1
-        switch = 0
-        while switch == 0:
-            try:
-                yearInput = int(input("What year is the car from?\n"))
-            except ValueError:
-                clear()
-                print("This is not a number")
-                input("Press enter to continue")
-            else:
-                switch = 1
+        priceInput = get_numeric_input('What is the price of the car?\n')
+        yearInput = get_numeric_input("What year is the car from?\n")
         cartypeInput = input("What type of car is it?\n")
         isLeasingCarInput = input("Is the car leased?\n").lower()
-        if isLeasingCarInput.startswith("j" or "y"):
+        if isLeasingCarInput in yeslist:
             cursor.execute(''' INSERT INTO cars(brand, price, year, cartype, isLeasingCar) VALUES (?,?,?,?,?) ''',
                            (brandInput.capitalize(), priceInput, yearInput, cartypeInput, 1))
         else:
@@ -208,9 +214,9 @@ def remove():
     t = PrettyTable(["ID", "Brand", "Price [usd.]", "Year", "Car Type", "Is car leased?"])
     for row in cur:
         if row[5]:
-            leasing = "Ja"
+            leasing = "Yes"
         else:
-            leasing = "Nej"
+            leasing = "No"
         t.add_row([row[0], row[1], row[2], row[3], row[4], leasing])
         '''print(str(row[0]) + ".", row[1], "fra år ", row[2], "med nummepladen:", row[3])'''
     print(t)
@@ -223,6 +229,8 @@ def remove():
         while switch == 0:
             try:
                 float(carID)
+                if input('This is a permanent decison.\nPress "a" if you want to go back') == "a":
+                    remove()
             except ValueError:
                 clear()
                 print("This is not a number")
@@ -280,18 +288,8 @@ def update():
                 else:
                     print("5. Leasing status: The car is leased")
                 print("6. Exit")
-            userInput = input("What do you want to update? Enter number\n")
+            userInput = get_numeric_input("What do you want to update? Enter number\n")
             switch1 = 1
-            switch2 = 0
-            while switch2 == 0:
-                try:
-                    float(userInput)
-                except ValueError:
-                    clear()
-                    print("This is not a number")
-                    input("Press enter to continue")
-                else:
-                    switch2 = 1
             if int(userInput) == 1:
                 clear()
                 sqlUpdate = ''' UPDATE cars SET brand =? WHERE id =? '''
@@ -301,33 +299,13 @@ def update():
             if int(userInput) == 2:
                 clear()
                 sqlUpdate = ''' UPDATE cars SET price =? WHERE id =? '''
-                switch3 = 0
-                while switch3 == 0:
-                    sqlData = input("What is the new price for the car?\n")
-                    try:
-                        float(sqlData)
-                    except ValueError:
-                        clear()
-                        print("This is not a number")
-                        input("Press enter to continue")
-                    else:
-                        switch3 = 1
+                sqlData = get_numeric_input("What is the new price for the car?\n")
                 cursor.execute(sqlUpdate, (int(sqlData), int(carID),))
                 db.commit()
             if int(userInput) == 3:
                 clear()
                 sqlUpdate = ''' UPDATE cars SET year =? WHERE id =? '''
-                switch4 = 0
-                while switch4 == 0:
-                    sqlData = input("What is the new year for the car?\n")
-                    try:
-                        float(sqlData)
-                    except ValueError:
-                        clear()
-                        print("This is not a number")
-                        input("Press enter to continue")
-                    else:
-                        switch4 = 1
+                sqlData = get_numeric_input("What is the new year for the car?\n")
                 cursor.execute(sqlUpdate, (int(sqlData), int(carID),))
                 db.commit()
             if int(userInput) == 4:
@@ -340,7 +318,7 @@ def update():
                 clear()
                 sqlUpdate = ''' UPDATE cars SET isLeasingCar =? WHERE id =? '''
                 sqlData = input("Is the car leased?\n").lower()
-                if sqlData.startswith("j" or "y"):
+                if sqlData in yeslist:
                     sqlData = 1
                 else:
                     sqlData = 0
@@ -354,8 +332,8 @@ def update():
 
 def showOne():
     clear()
-    searchtype = input("Do you want to search by Brand or ID\nPress 'b' for brand or 'i' for ID")
-    print("Note, it is recommended to use Brand search first in case if you have multiple cars of the same brand")
+    print("Do you want to search by Brand or ID\nPress 'b' for brand or 'i' for ID")
+    searchtype = input("Note, it is recommended to use Brand search first in case if you have multiple cars of the same brand\n")
     if searchtype == "b":
         sqlSearch = ''' SELECT * from cars WHERE brand =?'''
         sqlData = (input("Search for car brand: "))
@@ -372,9 +350,9 @@ def showOne():
                     leasing = "No"
             t.add_row([row[0], row[1], row[2], row[3], row[4], leasing])
             print(t)
-            carpick = input("Is this car correct?")
+            carpick = input("Is this car correct?\n")
             if carpick in yeslist:
-                carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
+                currentcar.append([row[0], row[1], row[2], row[3], row[4], leasing])
             else:
                 caryes = input("Sorry about that\nWould you like to try again press 'a' or restart? press 'r'")
                 try:
@@ -411,9 +389,9 @@ def showOne():
                     leasing = "No"
             t.add_row([row[0], row[1], row[2], row[3], row[4], leasing])
             print(t)
-            carpick = input("Is this car correct?")
+            carpick = input("Is this car correct?\n")
             if carpick in yeslist:
-                carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
+                currentcar = ''' SELECT price from cars WHERE ID = carpick'''
             else:
                 caryes = input("Sorry about that\nWould you like to try again press 'a' or restart? press 'r'")
                 try:
@@ -451,15 +429,16 @@ time.sleep(2)
 #distance calc
 #pos inputs
 carpos = []
-carx = get_numeric_input("What is your car's starting X position?")
+clear()
+carx = get_numeric_input("What is your car's starting X position?\n")
 carpos.append(carx)
 clear()
-cary = get_numeric_input("What is your car's starting Y position?")
+cary = get_numeric_input("What is your car's starting Y position?\n")
 carpos.append(cary)
 clear()
-des = get_numeric_input("Input your destination's X position")
+des = get_numeric_input("Input your destination's X position\n")
 clear()
-des1 = get_numeric_input("Input your destination's Y position")
+des1 = get_numeric_input("Input your destination's Y position\n")
 clear()
 #Row Magic
 t = PrettyTable([" ","X Position", "Y Position"])
@@ -505,7 +484,7 @@ value_coefficients = {
 
 # Find the appropriate coefficient based on car.value
 for threshold, coefficient in sorted(value_coefficients.items(), reverse=True):
-    if carlist[3] >= threshold:
+    if int(currentcar) >= threshold:
         ime = coefficient * des
         break
 else:
@@ -514,9 +493,9 @@ else:
 print(f"It wil take {ime} minutes to arrive at your destination")
 
 # gas calc
-speedword = []
+speedword = 0
 while True:
-    sped = input("How fast do you want to go?\nFast?\nMedium?\nSlow?")
+    sped = input("How fast do you want to go?\nFast?\nMedium?\nSlow?\n")
     spedwords = {
         'fast': 10,
         'medium': 35,
@@ -525,8 +504,7 @@ while True:
     for word, co in spedwords.items():
         if word in sped.lower():
             gas = miles / co
-            speedword.append(co)
-            speedword_str = str(speedword)
+            speedword = co
             break
     else:
         print("Invalid speed input. Please choose from 'Fast', 'Medium', or 'Slow'.")
