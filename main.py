@@ -102,26 +102,28 @@ def intro():
         print(part1 + part2)
     userInput = get_numeric_input("What do you choose? Enter a number\n", intro)
     choice = int(userInput)
+    # This needs to be checked first
     if choice in [1, 3, 4, 5] and rowcount == "":
         intro()
-    if choice == 1:
-        showOne()
-    elif choice == 2:
-        add()
-    elif choice == 3:
-        remove()
-    elif choice == 4:
-        update()
-    elif choice == 5:
-        showAll()
-    elif choice == 6:
-        clear()
-        print("Saving cars and exiting program")
-        sys.exit()
-    else:
-        print("This is not an option")
-        input("Press enter to continue")
-        intro()
+    options = {
+        1 : showOne()
+        2 : add()
+        3 : remove()
+        4 : update()
+        5 : showAll()
+    }
+    for numchoice, function in options.lower():
+        if choice in numchoice:
+            function
+            break
+        elif choice == 6:
+            clear()
+            print("Saving cars and exiting program")
+            sys.exit()
+        else:
+            print("This is not an option")
+            input("Press enter to continue")
+            intro()
 
 
 def showAll():
