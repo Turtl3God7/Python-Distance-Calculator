@@ -112,7 +112,7 @@ def intro():
         4 : update()
         5 : showAll()
     }
-    for numchoice, function in options.lower():
+    for numchoice, function in options.items():
         if choice in numchoice:
             function
             break
