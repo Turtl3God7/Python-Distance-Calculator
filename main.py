@@ -393,7 +393,7 @@ def showOne():
             print(t)
             carpick = input("Is this car correct?\n")
             if carpick in yeslist:
-                currentcar = ''' SELECT price from cars WHERE ID = carpick'''
+                currentcar = cursor.execute(''' SELECT price from cars WHERE ID = ?''', (carpick,)).fetchone()
             else:
                 caryes = input("Sorry about that\nWould you like to try again press 'a' or restart? press 'r'")
                 try:
