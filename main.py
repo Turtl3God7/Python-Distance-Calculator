@@ -114,7 +114,7 @@ def intro():
     }
     for numchoice, function in options.items():
         if choice in numchoice:
-            function
+            function()
             break
         elif choice == 6:
             clear()
