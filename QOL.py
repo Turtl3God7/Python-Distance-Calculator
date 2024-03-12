@@ -53,7 +53,7 @@ def get_numeric_input(prompt, function=None, city: bool = None, maxattempts=9999
                 else:
                     clear()
     input("You have hit the max attempts set for this part of the program\nYou will now be sent back to the beginning\n")
-    intro(city) # Just realized this code won't work
+    # Consider passing a callback function to handle this scenario.
 
 def caps(prompt):
     prompt = input(prompt)
@@ -111,7 +111,7 @@ def fibonacci(n, cache={}):
     else:
         fib_list = [0,1]
         for i in range(2, n + 1):
-            fib_list.append(fib_list(-1) + fib_list(-2))
+            fib_list.append(fib_list[-1] + fib_list[-2])
         cache[n] = fib_list
         return fib_list
  

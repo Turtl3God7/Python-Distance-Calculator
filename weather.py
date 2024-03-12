@@ -14,8 +14,8 @@ cursor = db.cursor()
 def units():
     print("Do you want the program to run in Imperial or Metric")
     sleep(1)
-    bool = input("Enter 'Y' for metric otherwise assumed to be imperial")
-    if bool.lower() == "y":
+    user_input = input("Enter 'Y' for metric otherwise assumed to be imperial")
+    if user_input.lower() == "y":
         unit = "METRIC"
         cursor.execute('''INSERT INTO location(units) VALUES (?)''', (unit.upper(),))
         db.commit()
@@ -58,7 +58,7 @@ def citycheck(city):
 
 
 async def getweather(city, ifstr: bool = False):
-    units = cursor.execute("SELECT units FROM location")
+    units = cursor.execute("SELECT units FROM location").fetchone()[0]
     if units == "METRIC":
         async with python_weather.Client(unit=python_weather.METRIC) as client:
             weather = await client.get(city)
