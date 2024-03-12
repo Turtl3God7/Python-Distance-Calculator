@@ -7,7 +7,7 @@ This is my first time creating code for others, and I would love it if you guys 
 
 ## Requirements
 
-There are 5 modules that need to be installed from PyPl for this program to work. To install these, you can either type into your command line:
+There are 5 modules that need to be installed from PYPI for this program to work. To install these, you can either type into your command line:
 
 ### Windows
 
@@ -37,10 +37,10 @@ Thank you to the creators of:
 - [Sqlite3](https://docs.python.org/3/library/sqlite3.html#module-sqlite3)
 - [RE](https://docs.python.org/3/library/re.html#module-re)
 
-### PyPi Modules
+### PyPI Modules
 
-- [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
-- [Prettytable](https://pypi.org/project/prettytable/)
+- [Beautiful Soup](https://pypi.org/project/beautifulsoup4/)
+- [PrettyTable](https://pypi.org/project/prettytable/)
 - [Urllib3](https://pypi.org/project/urllib3/)
 - [Colorama](https://pypi.org/project/colorama/)
 - [Termcolor](https://pypi.org/project/termcolor/)
@@ -48,6 +48,6 @@ Thank you to the creators of:
 Because of their work, the code would have been a lot harder to make.
 Also, thanks to [@Magnus-Thomsen](https://github.com/Magnus-Thomsen) for the SQL database and I have his GitHub linked.
 
-Note: This is my first ever time releasing code on Github and any suggestions from passerbyers would be helpful!
+Note: This is my first-ever time releasing code on GitHub and any suggestions from passersby would be helpful!
 
 > Bai 🐢༼ つ ◕‿◕ ༽つ
