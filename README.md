@@ -1,3 +1,7 @@
+##IMPORTANT
+Hey guys, currently I have other projects to finish in my life so I will take a break for 2 weeks to get everything handled.
+Thanks for understanding 
+
 # Hey there!
 
 Thank You whoever you are for using my program!
